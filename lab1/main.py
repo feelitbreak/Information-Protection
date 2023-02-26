@@ -19,7 +19,7 @@ def get_letter(num):
 def input_text_key1():
     in1 = input('Input text to be encrypted: ')
     in2 = input('Input key: ')
-    return in1, in2
+    return in1.lower(), in2.lower()
 
 
 def input_text_key2():
@@ -30,7 +30,7 @@ def input_text_key2():
         print('Invalid key. Using default key: ' + default_key2)
         in2 = default_key2
 
-    return in1, in2
+    return in1.lower(), in2.lower()
 
 
 def vigenere():

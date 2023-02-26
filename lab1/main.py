@@ -36,10 +36,13 @@ def input_text_key2():
 def vigenere():
     ciphertext_list = []
     for i in range(len(plaintext1)):
-        num1 = get_num(plaintext1[i])
-        num2 = get_num(key1[i % len(key1)])
-        num = (num1 + num2) % len(alphabet)
-        ciphertext_list.append(get_letter(num))
+        if plaintext1[i] == ' ':
+            ciphertext_list.append(' ')
+        else:
+            num1 = get_num(plaintext1[i])
+            num2 = get_num(key1[i % len(key1)])
+            num = (num1 + num2) % len(alphabet)
+            ciphertext_list.append(get_letter(num))
 
     return ''.join(ciphertext_list)
 
@@ -58,10 +61,13 @@ def substitution():
     sigma = get_sigma()
     ciphertext_list = []
     for letter in plaintext2:
-        num = get_num(letter)
-        ind = sigma[1].index(num)
-        cipher_num = sigma[0][ind]
-        ciphertext_list += get_letter(cipher_num)
+        if letter == ' ':
+            ciphertext_list.append(' ')
+        else:
+            num = get_num(letter)
+            ind = sigma[1].index(num)
+            cipher_num = sigma[0][ind]
+            ciphertext_list += get_letter(cipher_num)
 
     return ''.join(ciphertext_list)
 

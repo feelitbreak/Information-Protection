@@ -88,10 +88,22 @@ def feistel_encrypt(x, key):
     return concat_bin(left, right, sp_x_n)
 
 
+def feistel_decrypt(cipher, key):
+    left = get_high_half(cipher, feistel_x_n)
+    right = get_low_half(cipher, feistel_x_n)
+    for i in range(feistel_iterations):
+        key_i = get_key(key, key_set_list[sp_iterations - i % sp_iterations - 1])
+        left, right = feistel_iter(left, right, key_i)
+    left, right = right, left
+    return concat_bin(left, right, sp_x_n)
+
+
 def feistel_output():
     print(f"Plaintext: {feistel_x:0{feistel_x_n}b}")
     cipher = feistel_encrypt(feistel_x, feistel_key)
     print(f"Encryption result: {cipher:0{feistel_x_n}b}")
+    decrypted_text = feistel_decrypt(cipher, feistel_key)
+    print(f"Decryption result: {decrypted_text:0{feistel_x_n}b}")
 
 
 # main

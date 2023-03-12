@@ -6,17 +6,27 @@ x_n = 8
 
 sp_key = 0b1101_1110_0101
 
-key1 = 0b1011_1110
+key_n = 12
 
-key2 = 0b1100_1011
+key_set1 = [1, 3, 5, 7, 2, 4, 6, 8]
 
-key3 = 0b1111_1000
+key_set2 = [5, 7, 9, 11, 6, 8, 10, 12]
+
+key_set3 = [12, 10, 4, 2, 1, 3, 9, 11]
 
 s1 = [11, 5, 1, 9, 8, 13, 15, 0, 14, 4, 2, 3, 12, 7, 10, 6]
 
 s2 = [14, 7, 10, 12, 13, 1, 3, 9, 0, 2, 11, 4, 15, 8, 5, 6]
 
 p_shift = 6
+
+
+def get_key(main_key, key_set):
+    str_main_key = f"{main_key:0{key_n}b}"
+    res = []
+    for x in key_set:
+        res.append(str_main_key[x - 1])
+    return int(''.join(res), 2)
 
 
 def get_low_nibble(bin_num):
@@ -48,9 +58,18 @@ def sp(x, key):
 # main
 if __name__ == "__main__":
     print("Task 1. SP-network.")
+
+    key1 = get_key(sp_key, key_set1)
+    print(f"Key 1: {key1:0{x_n}b}")
     y1 = sp(sp_x, key1)
     print(f"Interation 1 result: {y1:0{x_n}b}")
+
+    key2 = get_key(sp_key, key_set2)
+    print(f"Key 2: {key2:0{x_n}b}")
     y2 = sp(y1, key2)
     print(f"Interation 2 result: {y2:0{x_n}b}")
+
+    key3 = get_key(sp_key, key_set3)
+    print(f"Key 3: {key3:0{x_n}b}")
     y3 = sp(y2, key3)
     print(f"Interation 3 result: {y3:0{x_n}b}")

@@ -1,7 +1,7 @@
 # Лабораторная работа №2. Вариант 8. Кендысь Алексей, 3 курс, 7 группа.
 
 sp_x = 0b0011_1000
-x_n = 8
+sp_x_n = 8
 
 sp_key = 0b1101_1110_0101
 key_n = 12
@@ -20,7 +20,11 @@ p_shift = 6
 sp_iterations = 3
 
 feistel_x = 0b0011_0001_0100_0110
+feistel_x_n = 16
+
 feistel_key = 0b1110_0100_1000
+
+feistel_iterations = 6
 
 
 def get_key(main_key, key_set):
@@ -51,20 +55,43 @@ def circular_shift_left(bin_num, d, n):
 
 def sp(x, key):
     cipher = (x + key) % 256
-    t1 = get_high_half(cipher, x_n)
-    t2 = get_low_half(cipher, x_n)
+    t1 = get_high_half(cipher, sp_x_n)
+    t2 = get_low_half(cipher, sp_x_n)
     n1 = s1[t1]
     n2 = s2[t2]
-    cipher = concat_bin(n1, n2, x_n >> 1)
-    return circular_shift_left(cipher, p_shift, x_n)
+    cipher = concat_bin(n1, n2, sp_x_n >> 1)
+    return circular_shift_left(cipher, p_shift, sp_x_n)
 
 
 def sp_output():
+    print(f"Plaintext: {sp_x:0{sp_x_n}b}")
+    y = 0
     for i in range(sp_iterations):
         key_i = get_key(sp_key, key_set_list[i])
-        print(f"Key {i + 1}: {key_i:0{x_n}b}")
-        y_i = sp(sp_x, key_i)
-        print(f"Interation {i + 1} result: {y_i:0{x_n}b}")
+        print(f"Key {i + 1}: {key_i:0{sp_x_n}b}")
+        y = sp(sp_x, key_i)
+        print(f"Interation {i + 1} result: {y:0{sp_x_n}b}")
+    print(f"Encryption result: {y:0{sp_x_n}b}")
+
+
+def feistel_iter(left, right, key):
+    return right, left ^ sp(right, key)
+
+
+def feistel_encrypt(x, key):
+    left = get_high_half(x, feistel_x_n)
+    right = get_low_half(x, feistel_x_n)
+    for i in range(feistel_iterations):
+        key_i = get_key(key, key_set_list[i % sp_iterations])
+        left, right = feistel_iter(left, right, key_i)
+    left, right = right, left
+    return concat_bin(left, right, sp_x_n)
+
+
+def feistel_output():
+    print(f"Plaintext: {feistel_x:0{feistel_x_n}b}")
+    cipher = feistel_encrypt(feistel_x, feistel_key)
+    print(f"Encryption result: {cipher:0{feistel_x_n}b}")
 
 
 # main
@@ -73,3 +100,4 @@ if __name__ == "__main__":
     sp_output()
 
     print("Task 2. Feistel-network.")
+    feistel_output()

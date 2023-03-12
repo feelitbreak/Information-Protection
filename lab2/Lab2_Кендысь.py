@@ -9,7 +9,6 @@ key_n = 12
 key_set1 = [1, 3, 5, 7, 2, 4, 6, 8]
 key_set2 = [5, 7, 9, 11, 6, 8, 10, 12]
 key_set3 = [12, 10, 4, 2, 1, 3, 9, 11]
-
 key_set_list = [key_set1, key_set2, key_set3]
 
 s1 = [11, 5, 1, 9, 8, 13, 15, 0, 14, 4, 2, 3, 12, 7, 10, 6]
@@ -95,9 +94,12 @@ def feistel_encrypt(x, keys):
     right = get_low_half(x, feistel_x_n)
 
     for i in range(feistel_iterations):
+        print(f"Left{i}: {left:0{sp_x_n}b}. Right{i}: {right:0{sp_x_n}b}.")
         left, right = feistel_iter(left, right, keys[i])
 
     left, right = right, left
+    print(f"Left{feistel_iterations}: {left:0{sp_x_n}b}. Right{feistel_iterations}: {right:0{sp_x_n}b}.")
+
     return concat_bin(left, right, sp_x_n)
 
 
@@ -107,12 +109,14 @@ def feistel_output():
     feistel_round_keys = key_expansion(feistel_key, key_set_list)
     feistel_round_keys += feistel_round_keys
 
+    print("\nEncryption iterations:")
     cipher = feistel_encrypt(feistel_x, feistel_round_keys)
-    print(f"Encryption result: {cipher:0{feistel_x_n}b}")
+    print(f"\nEncryption result: {cipher:0{feistel_x_n}b}")
 
     feistel_round_keys.reverse()
+    print("\nDecryption iterations:")
     decrypted_text = feistel_encrypt(cipher, feistel_round_keys)
-    print(f"Decryption result: {decrypted_text:0{feistel_x_n}b}")
+    print(f"\nDecryption result: {decrypted_text:0{feistel_x_n}b}")
 
 
 # main

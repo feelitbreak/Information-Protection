@@ -32,7 +32,16 @@ def get_key(main_key, key_set):
     res = []
     for x in key_set:
         res.append(str_main_key[x - 1])
+
     return int(''.join(res), 2)
+
+
+def key_expansion(main_key, key_sets):
+    round_keys = []
+    for i in range(len(key_sets)):
+        round_keys.append(get_key(main_key, key_sets[i]))
+
+    return round_keys
 
 
 def get_low_half(bin_num, n):
@@ -65,12 +74,15 @@ def sp(x, key):
 
 def sp_output():
     print(f"Plaintext: {sp_x:0{sp_x_n}b}")
+
+    sp_round_keys = key_expansion(sp_key, key_set_list)
     y = 0
+
     for i in range(sp_iterations):
-        key_i = get_key(sp_key, key_set_list[i])
-        print(f"Key {i + 1}: {key_i:0{sp_x_n}b}")
-        y = sp(sp_x, key_i)
+        print(f"Key {i + 1}: {sp_round_keys[i]:0{sp_x_n}b}")
+        y = sp(sp_x, sp_round_keys[i])
         print(f"Interation {i + 1} result: {y:0{sp_x_n}b}")
+
     print(f"Encryption result: {y:0{sp_x_n}b}")
 
 
@@ -78,31 +90,28 @@ def feistel_iter(left, right, key):
     return right, left ^ sp(right, key)
 
 
-def feistel_encrypt(x, key):
+def feistel_encrypt(x, keys):
     left = get_high_half(x, feistel_x_n)
     right = get_low_half(x, feistel_x_n)
-    for i in range(feistel_iterations):
-        key_i = get_key(key, key_set_list[i % sp_iterations])
-        left, right = feistel_iter(left, right, key_i)
-    left, right = right, left
-    return concat_bin(left, right, sp_x_n)
 
-
-def feistel_decrypt(cipher, key):
-    left = get_high_half(cipher, feistel_x_n)
-    right = get_low_half(cipher, feistel_x_n)
     for i in range(feistel_iterations):
-        key_i = get_key(key, key_set_list[sp_iterations - i % sp_iterations - 1])
-        left, right = feistel_iter(left, right, key_i)
+        left, right = feistel_iter(left, right, keys[i])
+
     left, right = right, left
     return concat_bin(left, right, sp_x_n)
 
 
 def feistel_output():
     print(f"Plaintext: {feistel_x:0{feistel_x_n}b}")
-    cipher = feistel_encrypt(feistel_x, feistel_key)
+
+    feistel_round_keys = key_expansion(feistel_key, key_set_list)
+    feistel_round_keys += feistel_round_keys
+
+    cipher = feistel_encrypt(feistel_x, feistel_round_keys)
     print(f"Encryption result: {cipher:0{feistel_x_n}b}")
-    decrypted_text = feistel_decrypt(cipher, feistel_key)
+
+    feistel_round_keys.reverse()
+    decrypted_text = feistel_encrypt(cipher, feistel_round_keys)
     print(f"Decryption result: {decrypted_text:0{feistel_x_n}b}")
 
 
@@ -111,5 +120,5 @@ if __name__ == "__main__":
     print("Task 1. SP-network.")
     sp_output()
 
-    print("Task 2. Feistel-network.")
+    print("\nTask 2. Feistel-network.")
     feistel_output()

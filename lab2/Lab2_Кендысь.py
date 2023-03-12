@@ -14,11 +14,15 @@ key_set2 = [5, 7, 9, 11, 6, 8, 10, 12]
 
 key_set3 = [12, 10, 4, 2, 1, 3, 9, 11]
 
+key_set_list = [key_set1, key_set2, key_set3]
+
 s1 = [11, 5, 1, 9, 8, 13, 15, 0, 14, 4, 2, 3, 12, 7, 10, 6]
 
 s2 = [14, 7, 10, 12, 13, 1, 3, 9, 0, 2, 11, 4, 15, 8, 5, 6]
 
 p_shift = 6
+
+sp_iterations = 3
 
 
 def get_key(main_key, key_set):
@@ -55,21 +59,15 @@ def sp(x, key):
     return circular_shift_left(cipher, p_shift, x_n)
 
 
+def sp_output():
+    for i in range(sp_iterations - 1):
+        key_i = get_key(sp_key, key_set_list[i])
+        print(f"Key {i + 1}: {key_i:0{x_n}b}")
+        y_i = sp(sp_x, key_i)
+        print(f"Interation {i + 1} result: {y_i:0{x_n}b}")
+
+
 # main
 if __name__ == "__main__":
     print("Task 1. SP-network.")
-
-    key1 = get_key(sp_key, key_set1)
-    print(f"Key 1: {key1:0{x_n}b}")
-    y1 = sp(sp_x, key1)
-    print(f"Interation 1 result: {y1:0{x_n}b}")
-
-    key2 = get_key(sp_key, key_set2)
-    print(f"Key 2: {key2:0{x_n}b}")
-    y2 = sp(y1, key2)
-    print(f"Interation 2 result: {y2:0{x_n}b}")
-
-    key3 = get_key(sp_key, key_set3)
-    print(f"Key 3: {key3:0{x_n}b}")
-    y3 = sp(y2, key3)
-    print(f"Interation 3 result: {y3:0{x_n}b}")
+    sp_output()

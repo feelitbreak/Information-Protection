@@ -132,6 +132,6 @@ if __name__ == "__main__":
     geffe = GeffeGenerator(N, lfsr_list)
     geffe_seq_output(geffe.gamma_seq)
 
-    print("\nTask 3. Geffe generator sequence.")
+    print("\nTask 3. Geffe generator statistics.")
     one_sum = geffe.count_ones()
     geffe_stats_output(N - one_sum, one_sum, geffe.r_stat(i_n))

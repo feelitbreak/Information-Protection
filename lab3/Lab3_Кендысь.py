@@ -13,14 +13,18 @@ a3 = 0b01000110
 c3 = 0b00001101
 
 N = 10000
+i_n = 5
 
 
-def count_ones(bin_num, n):
-    r = 0b0
-    for i in range(n):
-        r ^= bin_num >> (n - i - 1)
+def xor_number(bin_num):
+    return bin_num.bit_count() % 2
 
-    return r & 0b1
+
+def gamma_xor(gamma1, gamma2):
+    if gamma1 ^ gamma2 == 0:
+        return 1
+    else:
+        return -1
 
 
 class LFSR:
@@ -42,7 +46,7 @@ class LFSR:
             seq.append(self.b & 0b1)
 
             s = self.b & self.c
-            r = count_ones(s, self.n)
+            r = xor_number(s)
             self.b = (r << (self.n - 1)) | (self.b >> 1)
 
             res += 1
@@ -80,6 +84,22 @@ class GeffeGenerator:
 
         return res
 
+    def count_ones(self):
+        return sum(self.gamma_seq)
+
+    def r_stat(self, i):
+        res = []
+        r_sum = 0
+        for t in range(self.n - 1):
+            r_sum += gamma_xor(self.gamma_seq[t], self.gamma_seq[t + 1])
+
+        res.append(r_sum)
+        for j in range(1, i):
+            r_sum -= gamma_xor(self.gamma_seq[self.n - j - 1], self.gamma_seq[self.n - j])
+            res.append(r_sum)
+
+        return res
+
 
 def lfsr_output(lfsr_seq):
     for i in range(len(lfsr_seq)):
@@ -90,6 +110,12 @@ def lfsr_output(lfsr_seq):
 
 def geffe_seq_output(geffe_seq):
     print(f"Gamma sequence: {','.join(map(str, geffe_seq))}.")
+
+
+def geffe_stats_output(zeroes, ones, r_stat):
+    print(f"Number of zeroes: {zeroes}.")
+    print(f"Number of ones: {ones}.")
+    print(f"r_i: {', '.join(map(str, r_stat))}.")
 
 
 # main
@@ -105,3 +131,7 @@ if __name__ == "__main__":
     print("\nTask 2. Geffe generator sequence.")
     geffe = GeffeGenerator(N, lfsr_list)
     geffe_seq_output(geffe.gamma_seq)
+
+    print("\nTask 3. Geffe generator sequence.")
+    one_sum = geffe.count_ones()
+    geffe_stats_output(N - one_sum, one_sum, geffe.r_stat(i_n))

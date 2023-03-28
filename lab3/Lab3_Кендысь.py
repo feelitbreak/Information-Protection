@@ -87,16 +87,16 @@ class GeffeGenerator:
     def count_ones(self):
         return sum(self.gamma_seq)
 
-    def r_stat(self, i):
-        res = []
+    def get_r_sum(self, i):
         r_sum = 0
-        for t in range(self.n - 1):
-            r_sum += gamma_xor(self.gamma_seq[t], self.gamma_seq[t + 1])
+        for t in range(self.n - i):
+            r_sum += gamma_xor(self.gamma_seq[t], self.gamma_seq[t + i])
+        return r_sum
 
-        res.append(r_sum)
-        for j in range(1, i):
-            r_sum -= gamma_xor(self.gamma_seq[self.n - j - 1], self.gamma_seq[self.n - j])
-            res.append(r_sum)
+    def r_stat(self, i_n1):
+        res = []
+        for i in range(1, i_n1 + 1):
+            res.append(self.get_r_sum(i))
 
         return res
 

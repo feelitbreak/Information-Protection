@@ -80,7 +80,21 @@ def sign(in_p, in_q, in_g, in_d, in_m):
     return out_r, out_s
 
 
+def verify(in_p, in_q, in_g, in_e, in_m, in_r, in_s):
+    if in_r >= in_p or in_r <= 0 or in_s >= in_q or in_s < 0:
+        return False
+
+    h = sha256(in_m.encode("utf8"))
+    m1 = int(h.hexdigest(), base=16)
+
+    if (fast_pow(in_e, in_r, in_p) * fast_pow(in_r, in_s, in_p)) % in_p == fast_pow(in_g, m1, in_p):
+        return True
+    else:
+        return False
+
+
 # main
 if __name__ == "__main__":
     (p, q, g), e, d = gen(q)
     r, s = sign(p, q, g, d, m)
+    print(verify(p, q, g, e, m, r, s))

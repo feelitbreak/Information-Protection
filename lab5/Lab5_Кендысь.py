@@ -93,8 +93,85 @@ def verify(in_p, in_q, in_g, in_e, in_m, in_r, in_s):
         return False
 
 
+def input_int_value(value_name):
+    print(f"{value_name} = ")
+    value = input()
+
+    return int(value)
+
+
+def input_str_value(value_name):
+    print(f"{value_name} = ")
+    value = input()
+
+    return value
+
+
+def menu():
+    while True:
+        print("\nWhat do you want the program to do? Type Gen, Sign, Verify or Exit.")
+        inquiry = input()
+        if inquiry == 'Gen':
+            print("Input q.")
+            in_q = input_int_value("q")
+
+            (in_p, in_q, in_g), in_e, in_d = gen(in_q)
+            print("Output:")
+            print(f"p = {in_p}\nq = {in_q}\ng = {in_g}\ne = {in_e}\nd = {in_d}")
+
+        elif inquiry == 'Sign':
+            print("Input p, q, g, d, M.")
+
+            in_p = input_int_value("p")
+            in_q = input_int_value("q")
+            in_g = input_int_value("g")
+            in_d = input_int_value("d")
+            in_m = input_str_value("M")
+
+            in_r, in_s = sign(in_p, in_q, in_g, in_d, in_m)
+            print("Output:")
+            print(f"r = {in_r}\ns = {in_s}")
+
+        elif inquiry == 'Verify':
+            print("Input p, q, g, e, M, r, s.")
+
+            in_p = input_int_value("p")
+            in_q = input_int_value("q")
+            in_g = input_int_value("g")
+            in_e = input_int_value("e")
+            in_m = input_str_value("M")
+            in_r = input_int_value("r")
+            in_s = input_int_value("s")
+
+            print("Output:")
+            print(verify(in_p, in_q, in_g, in_e, in_m, in_r, in_s))
+
+        elif inquiry == 'Exit':
+            break
+        else:
+            print("Invalid input.")
+
+
 # main
 if __name__ == "__main__":
+    print("Default case.")
+    print(f"q = {q}")
+    print(f"M = {m}")
+
     (p, q, g), e, d = gen(q)
+    print("Gen output:")
+    print(f"p = {p}")
+    print(f"q = {q}")
+    print(f"g = {g}")
+    print(f"e = {e}")
+    print(f"d = {d}")
+
     r, s = sign(p, q, g, d, m)
+    print("Sign output:")
+    print(f"r = {r}")
+    print(f"s = {s}")
+
+    print("Answer for default value q:")
     print(verify(p, q, g, e, m, r, s))
+
+    menu()
